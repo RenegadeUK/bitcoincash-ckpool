@@ -79,7 +79,6 @@ jobs:
           version: "lab:latest"
 #          driver: cloud
 #          endpoint: "casraw/allgemein"
-          install: true
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
