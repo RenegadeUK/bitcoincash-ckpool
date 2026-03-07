@@ -165,14 +165,15 @@ set -e
 # Finally, start ckpool in the foreground:
 echo "Starting ckpool..."
 cd /ckpool/src
-./ckpool -B -c /etc/ckpool/bitcoincash.json &
-CKP_PID=$!
-sleep 120
-chmod +rx -R /logs/
-# 3) Periodically monitor both processes
-#    - If Bitcoin Cash Node dies, kill ckpool and exit
-#    - If ckpool dies, exit
 while true; do
+  ./ckpool -B -c /etc/ckpool/bitcoincash.json &
+  CKP_PID=$!
+  sleep 15
+  chmod +rx -R /logs/
+
+  # 3) Periodically monitor both processes
+  #    - If Bitcoin Cash Node dies, kill ckpool and exit
+  #    - If ckpool dies, retry while node is still syncing
   sleep 30
   
   # a) Check if bitcoind is still running
@@ -196,8 +197,15 @@ while true; do
 
   # b) Check if ckpool is still running
   if ! kill -0 "$CKP_PID" 2>/dev/null; then
-    echo "ckpool process has exited."
-    # If ckpool dies, just exit the container so Docker can restart
+    IBD_STATE=$(bitcoin-cli -conf="$BCH_CONF" getblockchaininfo 2>/dev/null | jq -r '.initialblockdownload' 2>/dev/null || echo "unknown")
+
+    if [ "$IBD_STATE" = "true" ]; then
+      echo "ckpool exited while node is still syncing (IBD=true); retrying in 30s."
+      sleep 30
+      continue
+    fi
+
+    echo "ckpool process has exited after node sync state IBD=$IBD_STATE."
     exit 1
   fi
 done
