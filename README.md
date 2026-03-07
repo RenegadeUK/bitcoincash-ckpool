@@ -51,6 +51,24 @@ See `docs/BCH_CONVERSION_PLAN.md` for the phased conversion plan and implementat
 
 On first run, BCH node sync can take significant time. While `initialblockdownload=true`, pool stats/API output may be incomplete and the dashboard can show limited/no stats.
 
+## Sync & Connections Monitoring
+
+- Sync status (one-shot):
+	- `docker exec bitcoincash-ckpool bitcoin-cli -conf=/etc/bitcoin/bitcoin.conf getblockchaininfo`
+- Key sync fields to watch:
+	- `blocks`
+	- `headers`
+	- `verificationprogress`
+	- `initialblockdownload`
+- Current connection count:
+	- `docker exec bitcoincash-ckpool bitcoin-cli -conf=/etc/bitcoin/bitcoin.conf getnetworkinfo | jq '.connections'`
+- Peer count:
+	- `docker exec bitcoincash-ckpool bitcoin-cli -conf=/etc/bitcoin/bitcoin.conf getpeerinfo | jq 'length'`
+- Peer addresses:
+	- `docker exec bitcoincash-ckpool bitcoin-cli -conf=/etc/bitcoin/bitcoin.conf getpeerinfo | jq '.[].addr'`
+- Live watch every 10 seconds:
+	- `watch -n 10 "docker exec bitcoincash-ckpool bitcoin-cli -conf=/etc/bitcoin/bitcoin.conf getblockchaininfo | jq '{blocks,headers,verificationprogress,initialblockdownload}'"`
+
 ## Upstream Reference
 
 The repository `https://github.com/skaisser/ckpool` has been added as the `upstream` remote for BCH reference and diffing.
