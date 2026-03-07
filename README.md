@@ -26,12 +26,15 @@ See `docs/BCH_CONVERSION_PLAN.md` for the phased conversion plan and implementat
 
 ## Quick Start (Local)
 
-1. Create your runtime config:
+1. Clone and enter the repo:
+	 - `git clone https://github.com/RenegadeUK/bitcoincash-ckpool.git`
+	 - `cd bitcoincash-ckpool`
+2. Create your runtime config:
 	 - `cp .env.example .env`
 	 - Edit `.env` and set at least `BTCADDRESS`, `RPCUSER`, and `RPCPASSWORD`.
-2. Build and start:
+3. Build and start:
 	 - `docker compose up --build`
-3. Optional clean reset (fresh DB/data test):
+4. Optional clean reset (fresh DB/data test):
 	 - `docker compose down -v --remove-orphans`
 
 ## Validation Checks
