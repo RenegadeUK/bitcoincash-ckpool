@@ -11,6 +11,15 @@ This project currently contains a recovered DGB-oriented baseline plus BCH migra
 
 Scope: single-node only (home miner setup). Multi-node failover is intentionally out of scope.
 
+Default host ports are intentionally offset to avoid clashing with your DigiByte stack:
+- BCH P2P: `18333`
+- BCH RPC: `18332`
+- Stratum: `4333`
+- ckpool API: `14028`
+- Logs HTTP: `13001`
+- ckstats UI: `13000`
+- PostgreSQL: `15432`
+
 ## Migration Plan
 
 See `docs/BCH_CONVERSION_PLAN.md` for the phased conversion plan and implementation checklist.
@@ -33,7 +42,11 @@ See `docs/BCH_CONVERSION_PLAN.md` for the phased conversion plan and implementat
 	- `docker exec bitcoincash-ckpool bitcoin-cli -conf=/etc/bitcoin/bitcoin.conf getblockchaininfo`
 	- Expected fields include `"pruned": true` and `"automatic_pruning": true`
 - ckstats UI:
-	- Open `http://localhost:3000`
+	- Open `http://localhost:13000`
+
+### Initial Sync Note
+
+On first run, BCH node sync can take significant time. While `initialblockdownload=true`, pool stats/API output may be incomplete and the dashboard can show limited/no stats.
 
 ## Upstream Reference
 

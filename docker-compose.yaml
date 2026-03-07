@@ -56,21 +56,21 @@ services:
 
     ports:
       # Publish Bitcoin Cash Node ports:
-      - "8333:8333"  # p2p
+      - "${HOST_BCH_P2P_PORT:-18333}:8333"  # p2p
       # Publish Bitcoin Cash Node RPC port:
-      - "8332:8332"  # rpc
+      - "${HOST_BCH_RPC_PORT:-18332}:8332"  # rpc
       # Publish ckpool port (if you want to accept external connections for miners):
-      - "3333:3333"
+      - "${HOST_STRATUM_PORT:-4333}:3333"
       # API port (for ckstats):
-      - "4028:4028"
+      - "${HOST_CKPOOL_API_PORT:-14028}:4028"
       # API port (for ckstats):
-      - "3001:80"
+      - "${HOST_LOGS_HTTP_PORT:-13001}:80"
 
   db:
     image: postgres:13
     # Restart the container automatically if it exits:
     restart: always
-    container_name: db
+    container_name: bitcoincash-db
     environment:
       POSTGRES_USER: "${POSTGRES_USER:-ckstats}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-ckstats}"
@@ -79,7 +79,7 @@ services:
       - ./db/data:/var/lib/postgresql/data
       - ./db/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
     ports:
-      - "5432:5432"
+      - "${HOST_DB_PORT:-15432}:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ckstats -t 20 && psql -U ckstats -d dbshadow -c 'SELECT 1' >/dev/null 2>&1"]
       interval: 20s
@@ -89,7 +89,7 @@ services:
     build:
       context: ckstats/
       dockerfile: Dockerfile
-    container_name: ckstats
+    container_name: bitcoincash-ckstats
     # Restart the container automatically if it exits:
     restart: always
     depends_on:
@@ -105,7 +105,7 @@ services:
       WAIT_FOR_FULL_SYNC: "${WAIT_FOR_FULL_SYNC:-0}"
     ports:
     # Publish ckstats port:
-      - "3000:3000"
+      - "${HOST_CKSTATS_PORT:-13000}:3000"
 
 
 
