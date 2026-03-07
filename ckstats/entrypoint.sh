@@ -12,7 +12,7 @@ echo "Generating .env file..."
 # Ensure variables are set or use defaults that work within the docker network
 DB_URL=${DATABASE_URL:-"postgres://ckstats:ckstats@db/ckstats"}
 SHADOW_DB_URL=${SHADOW_DATABASE_URL:-"postgres://ckstats:ckstats@db/dbshadow"}
-API=${API_URL:-"http://digibyte-ckpool:4028"}
+API=${API_URL:-"http://bitcoincash-ckpool:4028"}
 
 cat <<EOF > /app/ckstats/.env
 DATABASE_URL=${DB_URL}
@@ -32,7 +32,7 @@ service cron start
 
 while true; do
 # Attempt to call getblockchaininfo
-  OUTPUT=$(digibyte-cli -rpcconnect=digibyte-ckpool -rpcport=$RPCPORT -rpcuser=$RPCUSER -rpcpassword=$RPCPASSWORD getblockchaininfo 2>&1)
+  OUTPUT=$(bitcoin-cli -rpcconnect=bitcoincash-ckpool -rpcport=$RPCPORT -rpcuser=$RPCUSER -rpcpassword=$RPCPASSWORD getblockchaininfo 2>&1)
   RPC_EXIT_CODE=$?
 
   if [ $RPC_EXIT_CODE -eq 0 ]; then
@@ -41,13 +41,13 @@ while true; do
 
     # If .initialblockdownload is false, it's fully synced
     if [ "$IBD" = "false" ]; then
-      echo "DigiByte has finished initial block download."
+      echo "Bitcoin Cash Node has finished initial block download."
       break
     else
-      echo "DigiByte is still syncing. initialblockdownload=$IBD"
+      echo "Bitcoin Cash Node is still syncing. initialblockdownload=$IBD"
     fi
   else
-    echo "DigiByte not ready. RPC error code $RPC_EXIT_CODE."
+    echo "Bitcoin Cash Node not ready. RPC error code $RPC_EXIT_CODE."
     echo "Output: $OUTPUT"
   fi
 

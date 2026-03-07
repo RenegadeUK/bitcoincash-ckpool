@@ -3,7 +3,7 @@ FROM ubuntu:22.04
 
 # Let’s define some build arguments
 ARG TARGETARCH
-ARG DGB_VERSION=8.22.1
+ARG BCHN_VERSION=29.0.0
 
 ENV FNM_PATH="/root/.local/share/fnm"
 
@@ -45,18 +45,18 @@ RUN export PATH="$FNM_PATH:$PATH" && \
     corepack enable pnpm && \
     pnpm install
 
-# Download and install DigiByte Core
+# Download and install Bitcoin Cash Node
 # We pick x86_64 or arm64 archives depending on $TARGETARCH
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
-      curl -L -o digibyte.tar.gz https://github.com/DigiByte-Core/digibyte/releases/download/v${DGB_VERSION}/digibyte-v${DGB_VERSION}-x86_64-linux-gnu.tar.gz; \
+      curl -L -o bitcoincashnode.tar.gz https://github.com/bitcoin-cash-node/bitcoin-cash-node/releases/download/v${BCHN_VERSION}/bitcoin-cash-node-${BCHN_VERSION}-x86_64-linux-gnu.tar.gz; \
     elif [ "$TARGETARCH" = "arm64" ]; then \
-      curl -L -o digibyte.tar.gz https://github.com/DigiByte-Core/digibyte/releases/download/v${DGB_VERSION}/digibyte-v${DGB_VERSION}-aarch64-linux-gnu.tar.gz; \
+      curl -L -o bitcoincashnode.tar.gz https://github.com/bitcoin-cash-node/bitcoin-cash-node/releases/download/v${BCHN_VERSION}/bitcoin-cash-node-${BCHN_VERSION}-aarch64-linux-gnu.tar.gz; \
     else \
       echo "Unsupported or unknown architecture: $TARGETARCH"; \
       exit 1; \
     fi \
-    && tar -xzvf digibyte.tar.gz --strip-components=1 -C /usr/local \
-    && rm digibyte.tar.gz
+    && tar -xzvf bitcoincashnode.tar.gz --strip-components=1 -C /usr/local \
+    && rm bitcoincashnode.tar.gz
 
 # Expose the port
 EXPOSE 3000

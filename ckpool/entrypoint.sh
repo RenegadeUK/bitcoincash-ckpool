@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 set +e
 
-touch /home/cna.digibyte/mainnet/debug.log
-DGB_CONF="/etc/digibyte/digibyte.conf"
-DGB_LOGFILE="/home/cna.digibyte/mainnet/debug.log"
+mkdir -p "${DATADIR}"
+touch "${DATADIR}/debug.log"
+BCH_CONF="/etc/bitcoin/bitcoin.conf"
+BCH_LOGFILE="${DATADIR}/debug.log"
 
-# Generate DigiByte Core config from environment variables:
-cat <<EOF > /etc/digibyte/digibyte.conf
+# Generate Bitcoin Cash Node config from environment variables:
+cat <<EOF > /etc/bitcoin/bitcoin.conf
 # The following are substituted from environment vars in docker-compose:
 testnet=${TESTNET}
-algo=${ALGO}
 daemon=${DAEMON}
 server=${SERVER}
 txindex=${TXINDEX}
@@ -71,39 +71,39 @@ if [ "$TESTNET" = "1" ]; then
   mkdir -p ${DATADIR}/testnet
 fi
 
-echo "Starting DigiByte daemon..."
-digibyted -conf="$DGB_CONF" &
-DGB_PID=$!
+echo "Starting Bitcoin Cash Node daemon..."
+bitcoind -conf="$BCH_CONF" &
+BCH_PID=$!
 
-echo "DigiByte started with PID=$DGB_PID"
-echo "Waiting for DigiByte to become ready (initial block download may take time)..."
+echo "Bitcoin Cash Node started with PID=$BCH_PID"
+echo "Waiting for Bitcoin Cash Node to become ready (initial block download may take time)..."
 
 while true; do
-  # 1) Check if digibyted is still running
+  # 1) Check if bitcoind is still running
   #    kill -0 returns 0 if the process is alive, and non-zero if not.
-  kill -0 "$DGB_PID" 2>/dev/null
+  kill -0 "$BCH_PID" 2>/dev/null
   KILL_EXIT_CODE=$?
 
   if [ $KILL_EXIT_CODE -ne 0 ]; then
     # Here, kill -0 returned a code other than 0, which typically means
     # "No such process" or "permission denied" (rare in a Docker container).
     #
-    # In most cases, it means digibyted has exited or crashed.
+    # In most cases, it means bitcoind has exited or crashed.
     # We'll confirm by checking if the process name is still visible via pgrep.
 
-    echo "kill -0 returned code $KILL_EXIT_CODE. Checking if digibyted still exists..."
-    if ! pgrep -x digibyted >/dev/null 2>&1; then
-      echo "digibyted is definitely not running. Exiting with error."
+    echo "kill -0 returned code $KILL_EXIT_CODE. Checking if bitcoind still exists..."
+    if ! pgrep -x bitcoind >/dev/null 2>&1; then
+      echo "bitcoind is definitely not running. Exiting with error."
       echo "Last 50 lines of debug.log:"
-      tail -n 50 "$DGB_LOGFILE" || true
+      tail -n 50 "$BCH_LOGFILE" || true
       exit 1
     else
-      echo "Odd scenario: kill -0 says non-zero, but pgrep sees digibyted. Continuing..."
+      echo "Odd scenario: kill -0 says non-zero, but pgrep sees bitcoind. Continuing..."
     fi
   fi
 
   # 2) Attempt to call getblockchaininfo
-  OUTPUT=$(digibyte-cli -conf="$DGB_CONF" getblockchaininfo 2>&1)
+  OUTPUT=$(bitcoin-cli -conf="$BCH_CONF" getblockchaininfo 2>&1)
   RPC_EXIT_CODE=$?
 
   if [ $RPC_EXIT_CODE -eq 0 ]; then
@@ -112,13 +112,13 @@ while true; do
 
     # If .initialblockdownload is false, it's fully synced
     if [ "$IBD" = "false" ]; then
-      echo "DigiByte has finished initial block download."
+      echo "Bitcoin Cash Node has finished initial block download."
       break
     else
-      echo "DigiByte is still syncing. initialblockdownload=$IBD"
+      echo "Bitcoin Cash Node is still syncing. initialblockdownload=$IBD"
     fi
   else
-    echo "DigiByte not ready. RPC error code $RPC_EXIT_CODE."
+    echo "Bitcoin Cash Node not ready. RPC error code $RPC_EXIT_CODE."
     echo "Output: $OUTPUT"
   fi
 
@@ -127,7 +127,7 @@ while true; do
 done
 
 # Generate ckpool config from environment variables:
-cat <<EOF > /etc/ckpool/digibyte.json
+cat <<EOF > /etc/ckpool/bitcoincash.json
 {
   "btcd" : [
     {
@@ -158,21 +158,21 @@ set -e
 # Finally, start ckpool in the foreground:
 echo "Starting ckpool..."
 cd /ckpool/src
-exec ./ckpool -B -c /etc/ckpool/digibyte.json &
+./ckpool -B -c /etc/ckpool/bitcoincash.json &
 CKP_PID=$!
 sleep 120
 chmod +rx -R /logs/
 # 3) Periodically monitor both processes
-#    - If DigiByte dies, kill ckpool and exit
+#    - If Bitcoin Cash Node dies, kill ckpool and exit
 #    - If ckpool dies, exit
 while true; do
   sleep 30
   
-  # a) Check if digibyted is still running
-  if ! pgrep -x digibyted >/dev/null 2>&1; then
-    echo "digibyted process has exited unexpectedly."
-    echo "Showing last 50 lines of the DigiByte log:"
-    tail -n 50 "$DGB_LOGFILE" || true
+  # a) Check if bitcoind is still running
+  if ! pgrep -x bitcoind >/dev/null 2>&1; then
+    echo "bitcoind process has exited unexpectedly."
+    echo "Showing last 50 lines of the Bitcoin Cash Node log:"
+    tail -n 50 "$BCH_LOGFILE" || true
 
     # Stop ckpool, then exit so Docker knows container failed
     kill "$CKP_PID" 2>/dev/null || true
@@ -181,8 +181,8 @@ while true; do
 
   # You could optionally do an RPC check here if you want to confirm the node
   # is still responding, e.g.:
-  # if ! digibyte-cli -conf="$DGB_CONF" getblockchaininfo >/dev/null 2>&1; then
-  #   echo "digibyted is not responding on RPC, shutting down."
+  # if ! bitcoin-cli -conf="$BCH_CONF" getblockchaininfo >/dev/null 2>&1; then
+  #   echo "bitcoind is not responding on RPC, shutting down."
   #   kill "$CKP_PID" 2>/dev/null || true
   #   exit 1
   # fi
