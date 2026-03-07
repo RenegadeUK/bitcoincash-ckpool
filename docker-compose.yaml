@@ -2,12 +2,6 @@ services:
   bitcoincash-ckpool:
     build:
       context: ckpool/
-      # For x86_64 builds:
-      args:
-        TARGETARCH: amd64
-      # Or for ARM64:
-      # args:
-      #   TARGETARCH: arm64
     container_name: bitcoincash-ckpool
     # Restart the container automatically if it exits:
     restart: always
@@ -94,12 +88,6 @@ services:
     build:
       context: ckstats/
       dockerfile: Dockerfile
-      # For x86_64 builds:
-      args:
-        TARGETARCH: amd64
-      # Or for ARM64:
-      # args:
-      #   TARGETARCH: arm64
     container_name: ckstats
     # Restart the container automatically if it exits:
     restart: always
