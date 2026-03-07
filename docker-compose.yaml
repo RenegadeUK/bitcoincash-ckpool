@@ -14,41 +14,41 @@ services:
       start_period: 60s
     environment:
       # Bitcoin Cash Node config
-      TESTNET: "0"
-      DAEMON: "1"
-      SERVER: "1"
-      TXINDEX: "0"
-      PRUNE: "550"
-      MAXCONNECTIONS: "300"
-      DISABLEWALLET: "0"
-      RPCALLOWIP: "0.0.0.0/0"
-      PORT: "8333"
-      RPCPORT: "8332"
-      RPCBIND: "0.0.0.0"
-      RPCUSER: "rpcuser"
-      RPCPASSWORD: "rpcpassword"
-      ONLYNET: "IPv4"
-      ZMQPUBHASHBLOCK: "tcp://127.0.0.1:28333"
-      DATADIR: "/home/bitcoin/.bitcoin"
-      WAIT_FOR_FULL_SYNC: "0"
+      TESTNET: "${TESTNET:-0}"
+      DAEMON: "${DAEMON:-1}"
+      SERVER: "${SERVER:-1}"
+      TXINDEX: "${TXINDEX:-0}"
+      PRUNE: "${PRUNE:-550}"
+      MAXCONNECTIONS: "${MAXCONNECTIONS:-300}"
+      DISABLEWALLET: "${DISABLEWALLET:-0}"
+      RPCALLOWIP: "${RPCALLOWIP:-0.0.0.0/0}"
+      PORT: "${PORT:-8333}"
+      RPCPORT: "${RPCPORT:-8332}"
+      RPCBIND: "${RPCBIND:-0.0.0.0}"
+      RPCUSER: "${RPCUSER:-rpcuser}"
+      RPCPASSWORD: "${RPCPASSWORD:-rpcpassword}"
+      ONLYNET: "${ONLYNET:-IPv4}"
+      ZMQPUBHASHBLOCK: "${ZMQPUBHASHBLOCK:-tcp://127.0.0.1:28333}"
+      DATADIR: "${DATADIR:-/home/bitcoin/.bitcoin}"
+      WAIT_FOR_FULL_SYNC: "${WAIT_FOR_FULL_SYNC:-0}"
 
       # ckpool config
-      BTCD_URL: "127.0.0.1:8332"
-      BTCD_AUTH: "rpcuser"
-      BTCD_PASS: "rpcpassword"
-      SERVERURL: "0.0.0.0:3333"
-      BTCADDRESS: "xxx"
-      BTCSIG: "/mined by me/"
-      BLOCKPOLL: "50"
-      DONATION: "0.0"
-      NONCE1LENGTH: "4"
-      NONCE2LENGTH: "8"
-      UPDATE_INTERVAL: "5"
-      VERSION_MASK: "1fffe000"
-      MINDIFF: "500000"
-      STARTDIFF: "500000"
-      LOGDIR: "/logs"
-      ZMQBLOCK: "tcp://127.0.0.1:28333"
+      BTCD_URL: "${BTCD_URL:-127.0.0.1:8332}"
+      BTCD_AUTH: "${BTCD_AUTH:-rpcuser}"
+      BTCD_PASS: "${BTCD_PASS:-rpcpassword}"
+      SERVERURL: "${SERVERURL:-0.0.0.0:3333}"
+      BTCADDRESS: "${BTCADDRESS:-replace_with_bch_address}"
+      BTCSIG: "${BTCSIG:-/mined by me/}"
+      BLOCKPOLL: "${BLOCKPOLL:-50}"
+      DONATION: "${DONATION:-0.0}"
+      NONCE1LENGTH: "${NONCE1LENGTH:-4}"
+      NONCE2LENGTH: "${NONCE2LENGTH:-8}"
+      UPDATE_INTERVAL: "${UPDATE_INTERVAL:-5}"
+      VERSION_MASK: "${VERSION_MASK:-1fffe000}"
+      MINDIFF: "${MINDIFF:-500000}"
+      STARTDIFF: "${STARTDIFF:-500000}"
+      LOGDIR: "${LOGDIR:-/logs}"
+      ZMQBLOCK: "${ZMQBLOCK:-tcp://127.0.0.1:28333}"
 
     volumes:
       - ./ckpool/data:/home/bitcoin/.bitcoin
@@ -72,9 +72,9 @@ services:
     restart: always
     container_name: db
     environment:
-      POSTGRES_USER: ckstats
-      POSTGRES_PASSWORD: ckstats
-      POSTGRES_DB: ckstats
+      POSTGRES_USER: "${POSTGRES_USER:-ckstats}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-ckstats}"
+      POSTGRES_DB: "${POSTGRES_DB:-ckstats}"
     volumes:
       - ./db/data:/var/lib/postgresql/data
       - ./db/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
@@ -96,13 +96,13 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: "postgres://ckstats:ckstats@db/ckstats"
-      SHADOW_DATABASE_URL: "postgres://ckstats:ckstats@db/dbshadow"
-      API_URL: "http://bitcoincash-ckpool:4028"
-      RPCUSER: "rpcuser"
-      RPCPASSWORD: "rpcpassword"
-      RPCPORT: "8332"
-      WAIT_FOR_FULL_SYNC: "0"
+      DATABASE_URL: "${DATABASE_URL:-postgres://ckstats:ckstats@db/ckstats}"
+      SHADOW_DATABASE_URL: "${SHADOW_DATABASE_URL:-postgres://ckstats:ckstats@db/dbshadow}"
+      API_URL: "${API_URL:-http://bitcoincash-ckpool:4028}"
+      RPCUSER: "${RPCUSER:-rpcuser}"
+      RPCPASSWORD: "${RPCPASSWORD:-rpcpassword}"
+      RPCPORT: "${RPCPORT:-8332}"
+      WAIT_FOR_FULL_SYNC: "${WAIT_FOR_FULL_SYNC:-0}"
     ports:
     # Publish ckstats port:
       - "3000:3000"
