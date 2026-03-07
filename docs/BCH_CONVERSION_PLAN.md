@@ -61,14 +61,14 @@ Goal: improve reliability and BCH behavior without changing architecture.
 
 ### Planned enhancements
 
-- Multi-node `btcd` support in generated config (primary + backup RPC endpoints).
+- Single-node `btcd` configuration hardening for home mining.
 - ZMQ notify wiring in `btcd` entries when available.
 - Safer environment variable naming (`BCH_*` aliases while keeping backward compatibility).
 - Stronger readiness checks (RPC alive + initial sync state).
 
 ### Validation checklist
 
-- Failover works if primary RPC endpoint is unavailable.
+- Single local BCH RPC endpoint stays reachable during normal operation.
 - Block notifications are received with ZMQ enabled.
 
 ## 3) Phase 3 — Optional BCH feature parity from upstream

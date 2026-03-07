@@ -9,6 +9,8 @@ Use at your own risk.
 
 This project currently contains a recovered DGB-oriented baseline plus BCH migration work.
 
+Scope: single-node only (home miner setup). Multi-node failover is intentionally out of scope.
+
 ## Migration Plan
 
 See `docs/BCH_CONVERSION_PLAN.md` for the phased conversion plan and implementation checklist.
