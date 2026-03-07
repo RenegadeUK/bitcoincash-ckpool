@@ -88,7 +88,7 @@ Notes:
 
 - Keep strong warning in README until testnet validation is complete.
 - Test only on regtest/testnet first.
-- Do not connect production wallets or public miners before phase 2 validation passes.
+- Do not connect production wallets or public miners before local validation passes.
 
 ## 5) Immediate next execution step
 
