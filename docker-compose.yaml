@@ -30,6 +30,7 @@ services:
       ONLYNET: "IPv4"
       ZMQPUBHASHBLOCK: "tcp://127.0.0.1:28333"
       DATADIR: "/home/bitcoin/.bitcoin"
+      WAIT_FOR_FULL_SYNC: "0"
 
       # ckpool config
       BTCD_URL: "127.0.0.1:8332"
@@ -101,6 +102,7 @@ services:
       RPCUSER: "rpcuser"
       RPCPASSWORD: "rpcpassword"
       RPCPORT: "8332"
+      WAIT_FOR_FULL_SYNC: "0"
     ports:
     # Publish ckstats port:
       - "3000:3000"

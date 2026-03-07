@@ -13,6 +13,7 @@ echo "Generating .env file..."
 DB_URL=${DATABASE_URL:-"postgres://ckstats:ckstats@db/ckstats"}
 SHADOW_DB_URL=${SHADOW_DATABASE_URL:-"postgres://ckstats:ckstats@db/dbshadow"}
 API=${API_URL:-"http://bitcoincash-ckpool:4028"}
+WAIT_FOR_FULL_SYNC=${WAIT_FOR_FULL_SYNC:-0}
 
 cat <<EOF > /app/ckstats/.env
 DATABASE_URL=${DB_URL}
@@ -44,7 +45,12 @@ while true; do
       echo "Bitcoin Cash Node has finished initial block download."
       break
     else
-      echo "Bitcoin Cash Node is still syncing. initialblockdownload=$IBD"
+      if [ "$WAIT_FOR_FULL_SYNC" = "1" ]; then
+        echo "Bitcoin Cash Node is still syncing. initialblockdownload=$IBD"
+      else
+        echo "Bitcoin Cash Node is still syncing, continuing startup because WAIT_FOR_FULL_SYNC=${WAIT_FOR_FULL_SYNC}."
+        break
+      fi
     fi
   else
     echo "Bitcoin Cash Node not ready. RPC error code $RPC_EXIT_CODE."

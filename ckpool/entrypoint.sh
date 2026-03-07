@@ -5,6 +5,7 @@ mkdir -p "${DATADIR}"
 touch "${DATADIR}/debug.log"
 BCH_CONF="/etc/bitcoin/bitcoin.conf"
 BCH_LOGFILE="${DATADIR}/debug.log"
+WAIT_FOR_FULL_SYNC="${WAIT_FOR_FULL_SYNC:-0}"
 
 # Generate Bitcoin Cash Node config from environment variables:
 cat <<EOF > /etc/bitcoin/bitcoin.conf
@@ -116,7 +117,12 @@ while true; do
       echo "Bitcoin Cash Node has finished initial block download."
       break
     else
-      echo "Bitcoin Cash Node is still syncing. initialblockdownload=$IBD"
+      if [ "$WAIT_FOR_FULL_SYNC" = "1" ]; then
+        echo "Bitcoin Cash Node is still syncing. initialblockdownload=$IBD"
+      else
+        echo "Bitcoin Cash Node is still syncing, continuing startup because WAIT_FOR_FULL_SYNC=${WAIT_FOR_FULL_SYNC}."
+        break
+      fi
     fi
   else
     echo "Bitcoin Cash Node not ready. RPC error code $RPC_EXIT_CODE."
