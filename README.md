@@ -11,6 +11,9 @@ This project currently contains a recovered DGB-oriented baseline plus BCH migra
 
 Scope: single-node only (home miner setup). Multi-node failover is intentionally out of scope.
 
+Container images are not built/published by GitHub Actions in this repository.
+Use source code from this repo and build locally with Docker Compose.
+
 Default host ports are intentionally offset to avoid clashing with your DigiByte stack:
 - BCH P2P: `18333`
 - BCH RPC: `18332`
