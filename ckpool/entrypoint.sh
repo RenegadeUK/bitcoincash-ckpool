@@ -13,6 +13,7 @@ testnet=${TESTNET}
 daemon=${DAEMON}
 server=${SERVER}
 txindex=${TXINDEX}
+prune=${PRUNE:-550}
 maxconnections=${MAXCONNECTIONS}
 disablewallet=${DISABLEWALLET}
 onlynet=${ONLYNET}

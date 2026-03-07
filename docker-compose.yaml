@@ -24,6 +24,7 @@ services:
       DAEMON: "1"
       SERVER: "1"
       TXINDEX: "0"
+      PRUNE: "550"
       MAXCONNECTIONS: "300"
       DISABLEWALLET: "0"
       RPCALLOWIP: "0.0.0.0/0"
