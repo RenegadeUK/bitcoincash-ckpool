@@ -6,6 +6,13 @@ This repository is currently being converted from DigiByte (DGB) ckpool setup to
 It is incomplete and may contain incorrect chain, RPC, payout, wallet, and pool settings.
 
 Use at your own risk.
-# bitcoincash-ckpool
-This is not built yet, it is still digibyte...don't use
-Run a SOLO mining environment for Bitcoincash and CKPOOL with Docker
+
+This project currently contains a recovered DGB-oriented baseline plus BCH migration work.
+
+## Migration Plan
+
+See `docs/BCH_CONVERSION_PLAN.md` for the phased conversion plan and implementation checklist.
+
+## Upstream Reference
+
+The repository `https://github.com/skaisser/ckpool` has been added as the `upstream` remote for BCH reference and diffing.
