@@ -17,7 +17,7 @@ permissions:
   contents: write
 
 env:
-  IMAGE_NAME: casraw/digibyte-ckstats
+  IMAGE_NAME: casraw/bitcoincash-ckstats
   SHA: ${{ github.sha }}
 
 concurrency:
@@ -105,7 +105,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=casraw/digibyte-ckstats:buildcache
-          cache-to: type=registry,ref=casraw/digibyte-ckstats:buildcache,mode=max
+          cache-from: type=registry,ref=casraw/bitcoincash-ckstats:buildcache
+          cache-to: type=registry,ref=casraw/bitcoincash-ckstats:buildcache,mode=max
           outputs: ${{ github.event_name == 'pull_request' && 'type=cacheonly' || 'type=registry,push=true' }}
           provenance: mode=max

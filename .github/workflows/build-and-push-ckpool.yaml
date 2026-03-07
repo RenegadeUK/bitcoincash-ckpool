@@ -17,7 +17,7 @@ permissions:
   contents: write
 
 env:
-  IMAGE_NAME: casraw/digibyte-ckpool
+  IMAGE_NAME: casraw/bitcoincash-ckpool
   SHA: ${{ github.sha }}
 
 concurrency:
@@ -105,8 +105,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=casraw/digibyte-ckpool:buildcache
-          cache-to: type=registry,ref=casraw/digibyte-ckpool:buildcache,mode=max
+          cache-from: type=registry,ref=casraw/bitcoincash-ckpool:buildcache
+          cache-to: type=registry,ref=casraw/bitcoincash-ckpool:buildcache,mode=max
           outputs: ${{ github.event_name == 'pull_request' && 'type=cacheonly' || 'type=registry,push=true' }}
           provenance: mode=max
       - name: Update Docker Hub description ckpool
@@ -114,5 +114,5 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PAT }}
-          repository: casraw/digibyte-ckpool
+          repository: casraw/bitcoincash-ckpool
           readme-filepath: ./README.md
