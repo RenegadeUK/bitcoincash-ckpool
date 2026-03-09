@@ -61,9 +61,9 @@ services:
       - "${HOST_BCH_RPC_PORT:-18332}:8332"  # rpc
       # Publish ckpool port (if you want to accept external connections for miners):
       - "${HOST_STRATUM_PORT:-4333}:3333"
-      # API port (for ckstats):
+      # ckpool internal API port:
       - "${HOST_CKPOOL_API_PORT:-14028}:4028"
-      # API port (for ckstats):
+      # Apache serves ckpool logdir - used by ckstats (API_URL):
       - "${HOST_LOGS_HTTP_PORT:-13001}:80"
 
   db:
@@ -98,7 +98,7 @@ services:
     environment:
       DATABASE_URL: "${DATABASE_URL:-postgres://ckstats:ckstats@db/ckstats}"
       SHADOW_DATABASE_URL: "${SHADOW_DATABASE_URL:-postgres://ckstats:ckstats@db/dbshadow}"
-      API_URL: "${API_URL:-http://bitcoincash-ckpool:4028}"
+      API_URL: "${API_URL:-http://bitcoincash-ckpool}"
       RPCUSER: "${RPCUSER:-rpcuser}"
       RPCPASSWORD: "${RPCPASSWORD:-rpcpassword}"
       RPCPORT: "${RPCPORT:-8332}"

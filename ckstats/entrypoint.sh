@@ -12,7 +12,7 @@ echo "Generating .env file..."
 # Ensure variables are set or use defaults that work within the docker network
 DB_URL=${DATABASE_URL:-"postgres://ckstats:ckstats@db/ckstats"}
 SHADOW_DB_URL=${SHADOW_DATABASE_URL:-"postgres://ckstats:ckstats@db/dbshadow"}
-API=${API_URL:-"http://bitcoincash-ckpool:4028"}
+API=${API_URL:-"http://bitcoincash-ckpool"}
 WAIT_FOR_FULL_SYNC=${WAIT_FOR_FULL_SYNC:-0}
 
 cat <<EOF > /app/ckstats/.env
