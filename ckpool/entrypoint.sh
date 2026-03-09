@@ -162,6 +162,9 @@ cat <<EOF > /etc/ckpool/bitcoincash.json
 EOF
 set -e
 
+# Clean up any stale ckpool PID files from a previous run.
+rm -f /tmp/ckpool/*.pid
+
 # Finally, start ckpool in the foreground as PID 1.
 echo "Starting ckpool..."
 cd /ckpool/src
